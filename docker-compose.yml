@@ -10,7 +10,7 @@ services:
     restart: unless-stopped
     working_dir: /var/www/html
     ports:
-      - "80:80"
+      - "80"
     volumes:
       - ./:/var/www/html:rw
       - ./vendor:/var/www/html/vendor:rw

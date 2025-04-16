@@ -1,0 +1,57 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: apkjanimarsya
+    container_name: apkjanimarsya-app
+    restart: unless-stopped
+    working_dir: /var/www
+    volumes:
+      - ./:/var/www
+      - ./vendor:/var/www/vendor
+      - ./.env.docker:/var/www/.env
+    depends_on:
+      - db
+    networks:
+      - apkjanimarsya-network
+
+  nginx:
+    image: nginx:1.21
+    container_name: apkjanimarsya-nginx
+    restart: unless-stopped
+    ports:
+      - "8000:80"
+    volumes:
+      - ./:/var/www
+      - ./nginx/conf.d:/etc/nginx/conf.d
+    depends_on:
+      - app
+    networks:
+      - apkjanimarsya-network
+
+  db:
+    image: mysql:8.0
+    container_name: apkjanimarsya-db
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: apkjanimarsya
+      MYSQL_ROOT_PASSWORD: password
+      SERVICE_TAGS: dev
+      SERVICE_NAME: mysql
+    volumes:
+      - mysqldata:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    networks:
+      - apkjanimarsya-network
+
+networks:
+  apkjanimarsya-network:
+    driver: bridge
+
+volumes:
+  mysqldata:
+    driver: local

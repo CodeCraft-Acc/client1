@@ -1,6 +1,6 @@
-# Panduan Menjalankan Aplikasi dengan Docker
+# Panduan Menjalankan Aplikasi dengan Docker (Apache)
 
-Ini adalah panduan untuk menjalankan aplikasi Laravel menggunakan Docker.
+Ini adalah panduan untuk menjalankan aplikasi Laravel menggunakan Docker dengan Apache.
 
 ## Persyaratan
 
@@ -48,7 +48,7 @@ Ini adalah panduan untuk menjalankan aplikasi Laravel menggunakan Docker.
 
 Setelah container berjalan, Anda dapat mengakses aplikasi melalui:
 
-- **Aplikasi Web**: http://localhost:8000
+- **Aplikasi Web**: http://localhost
 
 ## Perintah Berguna
 
@@ -82,23 +82,43 @@ Database MySQL berjalan di container terpisah. Konfigurasi database:
 - **Username**: root
 - **Password**: password
 
+## Perbedaan Antara Windows dan Linux
+
+- Docker pada Windows menggunakan WSL 2 (Windows Subsystem for Linux) untuk menjalankan container Linux.
+- Pada server Linux, Docker berjalan secara native.
+- Namun, file Docker yang sama dapat berjalan di kedua sistem, asalkan Docker dan Docker Compose terinstal.
+
 ## Persiapan untuk Hosting
 
-Untuk persiapan hosting, Anda perlu:
+Untuk persiapan hosting di server Linux:
 
-1. Build image Docker:
-   ```
-   docker build -t apkjanimarsya .
-   ```
+1. **Clone Repository dan Build di Server (Cara 1)**:
+   - Clone repository ke server
+   - Jalankan `docker-compose up -d --build`
 
-2. Push image ke registry Docker seperti Docker Hub atau registry privat:
-   ```
-   docker tag apkjanimarsya <username>/apkjanimarsya:latest
-   docker push <username>/apkjanimarsya:latest
-   ```
+2. **Build Image dan Push ke Registry (Cara 2)**:
+   - Build image di komputer lokal: 
+     ```
+     docker build -t username/apkjanimarsya:latest .
+     ```
+   - Push ke Docker Registry:
+     ```
+     docker push username/apkjanimarsya:latest
+     ```
+   - Di server, pull image dan jalankan:
+     ```
+     docker pull username/apkjanimarsya:latest
+     docker-compose up -d
+     ```
 
-3. Di server hosting, pull image dan jalankan container:
-   ```
-   docker pull <username>/apkjanimarsya:latest
-   docker-compose up -d
-   ``` 
+## Troubleshooting
+
+- Jika Anda mengalami masalah dengan permission, jalankan:
+  ```
+  docker-compose exec app chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+  ```
+
+- Untuk melihat log Apache:
+  ```
+  docker-compose exec app cat /var/log/apache2/error.log
+  ``` 

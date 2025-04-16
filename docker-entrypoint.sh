@@ -10,21 +10,21 @@ if [ "$1" = "artisan" ]; then
 fi
 
 # Set the proper permissions
-chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
+chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
 # Run migrations if needed
 if [ "$1" = "artisan" ] && [ "$2" = "migrate" ]; then
-    php /var/www/artisan migrate --force
+    php /var/www/html/artisan migrate --force
 fi
 
 # Generate application key if not exists
 if [ "$1" = "artisan" ] && [ "$2" = "key:generate" ]; then
-    php /var/www/artisan key:generate
+    php /var/www/html/artisan key:generate
 fi
 
 # Clear and cache config
 if [ "$1" = "artisan" ] && [ "$2" = "config:cache" ]; then
-    php /var/www/artisan config:cache
+    php /var/www/html/artisan config:cache
 fi
 
 # Execute the passed command

@@ -10,9 +10,9 @@ services:
     restart: unless-stopped
     working_dir: /var/www
     volumes:
-      - ./:/var/www
-      - ./vendor:/var/www/vendor
-      - ./.env.docker:/var/www/.env
+      - ./:/var/www:rw
+      - ./vendor:/var/www/vendor:rw
+      - ./.env.docker:/var/www/.env:rw
     depends_on:
       - db
     networks:
@@ -25,8 +25,8 @@ services:
     ports:
       - "8000"
     volumes:
-      - ./:/var/www
-      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./:/var/www:rw
+      - ./nginx/conf.d:/etc/nginx/conf.d:rw
     depends_on:
       - app
     networks:
@@ -54,4 +54,4 @@ networks:
 
 volumes:
   mysqldata:
-    driver: local
+    driver: local:rw
